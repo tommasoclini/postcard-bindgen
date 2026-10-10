@@ -1,0 +1,30 @@
+[package]
+name = "single-crate"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+# This example is independent of the repository's main workspace.
+[workspace]
+resolver = "2"
+
+[features]
+default = []
+c-bindings = ["dep:postcard-bindgen"]
+
+[dependencies]
+serde = { version = "1", default-features = false, features = ["derive", "alloc"] }
+postcard-bindgen = { path = "../../postcard-bindgen", optional = true, features = ["generating"] }
+
+# build.rs compiles the shared types independently from the library.
+[build-dependencies]
+serde = { version = "1", default-features = false, features = ["derive", "alloc"] }
+postcard-bindgen = { path = "../../postcard-bindgen", optional = true, features = ["generating"] }
+
+[dev-dependencies]
+postcard = "1"
+tempfile = "3"
+
+[[example]]
+name = "bindings_dir"
+required-features = ["c-bindings"]

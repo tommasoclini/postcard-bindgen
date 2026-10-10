@@ -1,7 +1,7 @@
 //! # Postcard Bindgen
 //!
-//! This crate allows automatically generating javascript bindings to
-//! serialize javascript objects to postcard format and vice versa.
+//! This crate generates C, JavaScript, and Python bindings to serialize
+//! values to postcard format and deserialize them back.
 //!
 //! # Example
 //!
@@ -70,6 +70,13 @@ mod package;
 
 #[cfg(feature = "generating")]
 #[cfg_attr(docsrs, doc(cfg(feature = "generating")))]
+pub mod c {
+    pub use super::package::c_package::build_c_package as build_package;
+    pub use postcard_bindgen_core::code_gen::c::{generate, GeneratedBindings, GenerationSettings};
+}
+
+#[cfg(feature = "generating")]
+#[cfg_attr(docsrs, doc(cfg(feature = "generating")))]
 pub mod javascript {
     pub use super::package::npm_package::build_npm_package as build_package;
     pub use postcard_bindgen_core::code_gen::js::GenerationSettings;
@@ -111,8 +118,7 @@ pub mod __private {
     };
 }
 
-/// Macro to generate javascript and typescript binding strings which
-/// can be exported into files.
+/// Collects type metadata for the C, JavaScript, and Python backends.
 ///
 /// The supplied structures needs to implement the `trait` [`crate::__private::JsBindings`].
 /// This `trait` is automatically implemented when deriving the

@@ -11,7 +11,7 @@ readme.workspace = true
 documentation.workspace = true
 
 description = "A crate to generate bindings for the postcard binary format for other languages than Rust."
-include = ["/src/**", "/tests/**", "/examples/**", "/README.md"]
+include = ["/src/**", "/tests/**", "/examples/**", "/README.md", "/vendor/postcard-c/postcard.h", "/vendor/postcard-c/postcard.c"]
 
 [features]
 default = []
@@ -47,6 +47,10 @@ required-features = ["std", "generating"]
 
 [[example]]
 name = "small"
+required-features = ["std", "generating"]
+
+[[example]]
+name = "generate_c_bindings"
 required-features = ["std", "generating"]
 
 [package.metadata.docs.rs]

@@ -3,10 +3,10 @@ name: Rust
 on:
   push:
     branches: [main]
-    paths: ["**/*.rs", "**/Cargo.toml", "**/Cargo.lock", ".github/**/*.yml"]
+    paths: ["**/*.rs", "**/Cargo.toml", "**/Cargo.lock", ".github/**/*.yml", ".gitmodules", "postcard-bindgen/vendor/postcard-c"]
   pull_request:
     branches: [main]
-    paths: ["**/*.rs", "**/Cargo.toml", "**/Cargo.lock"]
+    paths: ["**/*.rs", "**/Cargo.toml", "**/Cargo.lock", ".github/**/*.yml", ".gitmodules", "postcard-bindgen/vendor/postcard-c"]
 
 jobs:        
 
@@ -15,17 +15,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: recursive
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
       - run: rustup component add rustfmt
       - run: cargo fmt -- --check
+      - run: cargo fmt --manifest-path examples/single_crate/Cargo.toml -- --check
 
   check:
     name: Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: recursive
       - name: typos-action      
         uses: crate-ci/typos@v1.49.0
       - uses: dtolnay/rust-toolchain@stable
@@ -40,6 +45,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: recursive
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy
@@ -52,11 +59,17 @@ jobs:
   test:
     name: Test Suite
     runs-on: ubuntu-latest
+    env:
+      CC: clang
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: recursive
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
           shared-key: "build-cache"
       - run: cargo test --all-features
+      - run: cargo check --manifest-path examples/single_crate/Cargo.toml --no-default-features
+      - run: cargo test --manifest-path examples/single_crate/Cargo.toml --all-features
 

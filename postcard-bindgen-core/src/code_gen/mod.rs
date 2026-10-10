@@ -7,6 +7,7 @@ mod switch_case;
 mod utils;
 mod variable_path;
 
+pub mod c;
 pub mod js;
 pub mod python;
 

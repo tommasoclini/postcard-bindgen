@@ -1,0 +1,3 @@
+[submodule "postcard-bindgen/vendor/postcard-c"]
+	path = postcard-bindgen/vendor/postcard-c
+	url = https://github.com/tommasoclini/postcard-c.git

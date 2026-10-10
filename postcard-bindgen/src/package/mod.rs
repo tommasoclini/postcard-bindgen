@@ -1,3 +1,4 @@
+pub mod c_package;
 pub mod npm_package;
 pub mod pip_module;
 
