@@ -573,7 +573,7 @@ int main(void) {
   CHECK(checks_checks_encode(&slice, &value) == POSTCARD_ERROR_INVALID_INPUT);
   CHECK(checks_checks_decode(&slice, &value) == POSTCARD_ERROR_INVALID_INPUT);
   slice = postcard_slice_new(sizeof buffer, buffer);
-  slice.len = slice.capacity + 1;
+  slice.len = slice.cap + 1;
   CHECK(checks_checks_encode(&slice, &value) == POSTCARD_ERROR_INVALID_INPUT);
   slice.len = 0;
   value.string.len = 3;

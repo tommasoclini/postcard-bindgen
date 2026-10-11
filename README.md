@@ -120,7 +120,7 @@ int main(void) {
         return 1;
     }
 
-    /* For decoding, capacity is the number of available input bytes. */
+    /* For decoding, cap is the number of available input bytes. */
     telemetry_packet decoded = {0};
     slice = postcard_slice_new(slice.len, buffer);
     return telemetry_packet_decode(&slice, &decoded) != POSTCARD_SUCCESS;

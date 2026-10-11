@@ -172,7 +172,7 @@ pub fn generate(
                 needs_utf8: false,
                 indent: 1,
             };
-            body.line("if (slice->data == nullptr || slice->len > slice->capacity) return POSTCARD_ERROR_INVALID_INPUT;");
+            body.line("if (slice->data == nullptr || slice->len > slice->cap) return POSTCARD_ERROR_INVALID_INPUT;");
             body.line("(void)value;");
             body.line("[[maybe_unused]] postcard_error_t error = POSTCARD_SUCCESS;");
             match &definition.kind {
@@ -833,7 +833,7 @@ impl Body<'_> {
 // Validate widths before delegating to postcard-c (including the high bits of
 // the tenth byte for u64). Does not consume input or require canonical varints.
 const VARINT_HELPER: &str = r#"[[nodiscard]] static inline postcard_error_t @PREFIX@_check_varint(const postcard_slice_t slice[static 1], unsigned bits) {
-  size_t remaining = slice->capacity - slice->len;
+  size_t remaining = slice->cap - slice->len;
   unsigned count = (bits + 6) / 7;
   for (unsigned i = 0; i < count; ++i) {
     if (i >= remaining) return POSTCARD_ERROR_INCOMPLETE_DATA;
