@@ -423,6 +423,7 @@ impl Generator<'_> {
                         return Err(invalid(format!("C enum variant collision: {member}")));
                     }
                     self.reserve(&format!("{name}_{member}"))?;
+                    self.reserve(&format!("{name}_new_{member}"))?;
                     let fields = match variant.inner_type {
                         EnumVariantType::Empty => Vec::new(),
                         EnumVariantType::Tuple(fields) => self.tuple(&fields)?,
@@ -469,6 +470,23 @@ impl Generator<'_> {
                     self.declarations.push_str("  } data;\n");
                 }
                 writeln!(self.declarations, "}} {name};\n").unwrap();
+                for variant in variants {
+                    let member = &variant.name;
+                    if variant.fields.is_empty() {
+                        writeln!(
+                            self.declarations,
+                            "#define {name}_new_{member}() \\\n  (({name}) {{ .tag = {name}_{member} }})"
+                        )
+                        .unwrap();
+                    } else {
+                        writeln!(
+                            self.declarations,
+                            "#define {name}_new_{member}(...) \\\n  (({name}) {{ .tag = {name}_{member}, .data.{member} = {{ __VA_ARGS__ }} }})"
+                        )
+                        .unwrap();
+                    }
+                }
+                self.declarations.push('\n');
             }
         }
         self.definitions.push(Definition { name, kind });

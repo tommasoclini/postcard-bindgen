@@ -110,7 +110,7 @@ static_assert(sizeof(contracts_limit_tag) == sizeof(uint32_t));
 int main(void) {
   uint8_t buffer[5] = {};
   postcard_slice_t slice = postcard_slice_new(sizeof buffer, buffer);
-  contracts_limit value = {.tag = contracts_limit_last}, decoded = {};
+  contracts_limit value = contracts_limit_new_last(), decoded = {};
   if (contracts_limit_encode(&slice, &value) != POSTCARD_SUCCESS) return 1;
   if (slice.len != 5 || buffer[4] != 15) return 2;
   for (size_t i = 0; i < 4; ++i) if (buffer[i] != 255) return 3;
@@ -353,14 +353,14 @@ int main(void) {
   input.child.value = 300;
   input.tuple.field_0 = 42;
   input.tuple.field_1 = true;
-  input.choice.tag = @MODE@;
+  input.choice = fixture_choice_new_idle();
   if (@MODE@ == 1) {
-    input.choice.data.tuple.field_0 = 700;
-    input.choice.data.tuple.field_1.value = 500;
+    input.choice = fixture_choice_new_tuple(700, {.value = 500});
   } else if (@MODE@ == 2) {
-    input.choice.data.record.value = -1000;
-    input.choice.data.record.flag = true;
+    input.choice = fixture_choice_new_record(.value = -1000, .flag = true);
   }
+  CHECK(fixture_choice_new_record(.value = 42).data.record.value == 42);
+  CHECK(!fixture_choice_new_record(.value = 42).data.record.flag);
   input.option.is_some = @MODE@ != 0;
   input.option.value.field_0 = 900;
   input.option.value.field_1 = false;
